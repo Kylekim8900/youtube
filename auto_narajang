@@ -1,0 +1,103 @@
+import xlwt
+import urllib2
+from bs4 import BeautifulSoup
+
+print('##################################')
+print('#### NaraJangTer Auto Crwaler ####')
+print('##################################')
+print('##################################')
+print('# Version 1.0 / Made By Zeromini #')
+print('##################################')
+print('##################################')
+
+print('###Please Put the DateArrange..###')
+print('==================================')
+print('1.Put Starting Date(Ex: 2018/03/02')
+start_day = str(raw_input('>>'))
+print('2.Put Finish Date  (Ex: 2019/03/02')
+finish_day = str(raw_input('>>'))
+print('3.Put Check Pages *RECOMMEND:500(Ex:10')
+page_count = int(input('>>'))
+print('####### Statring Cralwing ########')
+
+workbook = xlwt.Workbook(encoding='utf-8')
+workbook.default_style.font.heignt = 20*11  
+
+xlwt.add_palette_colour("lightgray", 0x21) 
+workbook.set_colour_RGB(0x21, 216, 216, 216)
+xlwt.add_palette_colour("lightgreen", 0x22) 
+workbook.set_colour_RGB(0x22, 216,228,188)
+
+worksheet = workbook.add_sheet('sheet1')      
+col_width_0 = 256*13
+col_width_1 = 256*13
+col_width_2 = 256*21
+col_width_3 = 256*13
+col_width_4 = 256*13
+col_width_5 = 256*15
+col_width_6 = 256*16
+col_width_7 = 256*14
+col_width_8 = 256*13
+col_width_9 = 256*13
+col_width_10 = 256*23
+ 
+col_height_content = 48
+ 
+worksheet.col(0).width = col_width_0
+worksheet.col(1).width = col_width_1
+worksheet.col(2).width = col_width_2
+worksheet.col(3).width = col_width_3
+worksheet.col(4).width = col_width_4
+worksheet.col(5).width = col_width_5
+worksheet.col(6).width = col_width_6
+worksheet.col(7).width = col_width_7
+worksheet.col(8).width = col_width_8
+worksheet.col(9).width = col_width_9
+worksheet.col(10).width = col_width_10
+
+list_style = "font:height 180,bold on; pattern: pattern solid, fore_color lightgray; align: wrap on, vert centre, horiz center"
+
+
+#worksheet.write(0,0,"Date", xlwt.easyxf(list_style))
+worksheet.write(0,1,"Job", xlwt.easyxf("font:height 180, bold on;pattern: pattern solid, fore_color lightgreen; align:vert centre, horiz center"))
+worksheet.write(0,2,"Gonggo_Sequence", xlwt.easyxf(list_style))
+worksheet.write(0,3,"Index", xlwt.easyxf(list_style))
+worksheet.write(0,4,"Gonggo_Name", xlwt.easyxf(list_style))
+worksheet.write(0,5,"Company", xlwt.easyxf(list_style))
+worksheet.write(0,6,"Team", xlwt.easyxf(list_style))
+worksheet.write(0,7,"Way", xlwt.easyxf(list_style))
+worksheet.write(0,8,"Start Day(Finish Day)", xlwt.easyxf(list_style))
+worksheet.write(0,9,"Share", xlwt.easyxf(list_style))
+worksheet.write(0,10,"Bid", xlwt.easyxf(list_style))
+
+row_marker = 0
+column_marker = 0
+
+for i in range(1,page_count):
+	#start_day = '2018/03/02'
+	#finish_day = '2018/03/31'
+	url_count = str(i)
+	print('##################################')
+	print('# Crawl :'+start_day+'~'+finish_day)
+	print('# C H E C K I N G P A G E ====> '+url_count)
+	print('##################################')
+
+	urlString = "http://www.g2b.go.kr:8101/ep/tbid/tbidList.do?area=&bidNm=&bidSearchType=1&fromBidDt="+start_day+"&fromOpenBidDt=&instNm=%C7%D1%B1%B9%C0%BA%C7%E0&maxPageViewNoByWshan=9&radOrgan=1&regYn=Y&searchDtType=1&searchType=1&taskClCds=&toBidDt="+finish_day+"&toOpenBidDt=&currentPageNo="+url_count+""
+	body = urllib2.urlopen(urlString)
+	soup = BeautifulSoup(body)
+
+	parse_tr = soup.find_all('table')[0]
+
+	for row in parse_tr.find_all('tr'):
+		column_marker = 0
+		columns = row.find_all('td')
+		for column in columns:
+			tmpstr = column.get_text()
+			string =  tmpstr
+			worksheet.write(row_marker+1,column_marker+1,unicode(string))
+			column_marker += 1
+		if len(columns) > 0:
+			row_marker += 1
+
+workbook.save('result.xls')
+
