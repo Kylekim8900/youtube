@@ -1,0 +1,46 @@
+import pythoncom, pyHook
+import sys
+import pyautogui
+import time
+
+
+print(' Action Copy Program V 1.0')
+print(' Made by Zeromini TV')
+
+def OnKeyboardEvent(event):
+    f = open('c:/keylogger.txt',mode='a')
+    print ('Key:', event.Key)
+    f.write(event.Key+'\n')
+    f.close()
+
+# return True to pass the event to other handlers
+    return True
+
+print('Do u wanna Start Copy?')
+print('IF u want press key : S')
+print('IF u play action : P')
+start_key = str(raw_input('>>'))
+if start_key == 'S':
+	# create a hook manager
+	hm = pyHook.HookManager()
+	# watch for all mouse events
+	hm.KeyDown = OnKeyboardEvent
+	# set the hook
+	hm.HookKeyboard()
+	#f.write(hm.Key)
+	# wait forever
+	pythoncom.PumpMessages()
+
+elif start_key == 'P':
+	print('Starting Action Play After 3 Sec...')
+	time.sleep(1)
+	r = open('c:/keylogger.txt', mode='rt')
+	read_key = [line.strip() for line in r.readlines()]
+	for i in range(0,len(read_key)):
+		pyautogui.press(read_key[i])
+		time.sleep(1)
+
+
+else:
+	print('Exit...')
+	sys.exit(1)
