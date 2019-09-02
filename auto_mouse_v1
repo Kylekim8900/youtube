@@ -1,0 +1,28 @@
+import pyautogui
+import time
+
+print ('Auto_mouse')
+
+
+while 1:
+	a = raw_input('>>')
+	if a == 's':
+		print ('save')
+		x_axis = [0]*3
+		y_axis = [0]*3
+		for i in range(3):
+			print(pyautogui.position())
+			x,y = pyautogui.position()
+			x_axis[i] = x
+			y_axis[i] = y 
+			time.sleep(2)
+
+	elif a == 't':
+		print('finish')
+		for i in range(3):
+			pyautogui.click(x_axis[i],y_axis[i])
+			time.sleep(2)
+			break
+
+	else:
+		print('wat r u doing?')
